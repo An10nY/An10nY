@@ -1,0 +1,444 @@
+//hello program
+
+	<question style=example>
+	  <text ref=HTTP_LP_example> Hello </text>
+	</question> 
+//print
+	<sysout value="new_start_index='@new_start_index'">
+
+//variables
+
+	<var name=a value=(2+2)>
+	<var name=b value=sqrt(4*4)>
+	<var name=c value=(@a > 4 || @a == @b)>
+	<var name=d value={2,3,5,7,11,13,17,19,23}>
+	<var name=e value=((a == 4) ? "four" : "not four")>
+	<var name=f value=[3+45-cos(pi)+pow(asin(sin(2)),2)]>
+	<var name=g value=[[3x+1-x]]>
+
+//access list item
+
+	<var name=f value=@c[3]>
+	<var name=f value=@c["Firstname"]>
+
+//text with variable reference
+
+	<text ref=Multiplication>
+	  @a; times @b; are &(@a*@b);.
+	  The third prime number is @c[3], right after @c[2].
+	  The first &(length(@c;)) prime numbers are @c;.
+	</text>
+
+//instance and requirement
+	<item title="Addition of two-digit numbers w/o carry">
+	 <instance>
+	    <integer name=a10 from=1 to=9>
+	    <integer name=a01 from=0 to=9>
+	    <integer name=b10 from=1 to=9>
+	    <integer name=b01 from=0 to=9>
+	  </instance>
+	  <requirement>
+	    <requires cond=(@a10+@b10 < 10)>
+	    <requires cond=(@a01+@b01 < 10)>
+	    <requires cond=(!(@a10==@b10 && @01==@b01))>
+	  </requirement>
+	  <question>
+	    <text ref=Output>
+	      Add @a10@a01; and @b10@b01.
+	    <text>
+	  </question>
+	</item>
+
+//types of variables
+	<char name=myChar from=g to=z>
+	<float name=myNumber from=1.45 to=4.30>
+	<integer name=myNumber from=1 to=99>
+	<ptext ref={myText1,myText2,myText3} list={text1,text2,text3} index={i1,i2,i3}>
+	<pvalue name={x,y,z} list={"orange","apple","peach"}>
+	<pvalue name={a,b} list={"orange","apple","peach"} index={i,j}>
+	<pvar name={x,y,z} list={myVar1,myVar2,myVar3}>
+	<rtext name=myText list={text1,text2,text3} index=i>
+	<rvalue name=fruit list={"orange","apple","peach"}>
+
+//Labels (deprecated)
+	<description>
+	  <label name=gradeIntro value=4>
+	  <label name=gradeMaster value=5>
+	  <label name=curriculum value={arithmetic,fraction,addition,sameDenominator,oneDigit}>
+	</description>
+
+//answers
+	<var name=student value="[8]/[18]">
+	<var name=teacher value="[4]/[9]">
+
+//evaluation
+	<evaluation rule=arithmetics>
+	  
+
+//feedback
+	<feedback>
+	  <catch name={system.*}>
+	  <catch name={syntax.*}>
+	  <catch name={type.*}>
+	  <catch name={hint.*}>
+	  <catch name={value.*}>
+	  <catch name={reduce.FractionNotSimplified} value={reduce._}>
+	  <catch name={reduce.MixedNumberNotSimplified} value={reduce._}>
+	  <catch name={convention.*}>
+	</feedback>
+
+//SQL request
+	<sql name=myTable query=" SELECT * FROM student WHERE firstname='Johnny' ">
+	 
+
+//catch sql error
+	<SQL query="....." error=myerror>
+	 
+
+//rows for each column of the table student (list)
+	<text ref=Output>
+  	List of last names: @myTable.student.lastname
+	</text>
+
+//access to the elements of the last list
+	<for name=i value=1 cond=(@i<=length(@myTable.student.lastname)) next=(@i+1)>
+	  <varadd name=line value="entry @i is @myTable.student.lastname[@i]">
+	</for>
+
+//regex
+	//matching
+		<var name=matches value=("apples, oranges, pears, and plums" =~ m/([\w]+)/g)>
+	//substitution
+		<var name=string value=("oranges are better than apples" =~ s/^([a-z]+)([^a-z].*[^a-z])([a-z]+)$/$3$2$1/)>
+
+//Hash tables
+	Creation: <var name=myHash  value=hashNew(@size)>
+	Insertion: &(hashPut(@myHash,@key,@value);;) 
+	Retrieval: <var name=val value=@myHash[“@key”]> 
+	Removal: &(hashRemove(@myHash,@key);;)
+	Value existence: <if cond=(hashContains(@myHash,@value))>
+	Key existence: <if cond=(hashContainsKey(@myHash,@key))> 
+	All values retrieval: <var name=list_values  value=hashGetValues(@myHash)>
+	All keys retrieval: <var name=list_keys value=hashGetKeys(@myHash)>
+	Hash size: <var name=size value=hashGetSize(@myHash)> 
+	Destruction: <unvar name=myHash>
+	Display: <var name=hashString value=toString(@myHash)> 
+	Existence:  <if cond=(exist(myHash))> 
+
+//Parse XML
+	<parse file="@_SHAREDIR/xml/library.xml" name=library1 style=xml>
+	<parse value="
+	    <book>
+	        <author>Smith</author>
+	        <title>Introduction to Basic Math</title>
+	    </book>
+	" name=library2 style=xml>
+
+//conditions
+	<if cond=(@a > @b)>
+	  <text ref=Comment>swaping @a; and @b;</text>
+	  <var name=a value=(@a+@b)>
+	  <var name=b value=(@a-@b)>
+	  <var name=a value=(@a-@b)>
+	<else cond=(@a == @b)>
+	  <text ref=Comment>@a; and @b; are identical</text>
+	<else>
+	  <text ref=Comment>@b; is greater than @a;</text>
+	</if>
+
+//loops
+	<while cond=(sqrt(@i) <= 256)>
+	  <var name=i value=(@i+1)>
+	</while>
+	<for name=i value=1 cond=(@i<10) next=(@i+1)>
+	  <varadd name=r value="@i; times @i; is &(@i*@i);">
+	</for>
+
+//date and time 
+	@.info.current_date[1] and @info.current_time[1] are set in Isl.def and are the date and time in Los Angeles.
+	 
+
+//convert time zone
+	convertTZ("2007-03-06 18:28:30", "America/Los_Angeles", "Europe/Paris")
+	= 2007-03-07 03:28:30
+
+
+//functions
+	<function name=title list={firstname,lastname,age,gender}>
+	  <if cond=(@age>=18)>
+	    <if cond=(@gender == 2)>
+	      <return value="Ms. @lastname">
+	    <else>
+	      <return value="Mr. @lastname">
+	    </if>
+	  <else>
+	    <return value="@firstname">
+	  </if>
+	</function>
+	<text ref=MyOutput>
+	 Dear @title("John","Orange",21,1), ... Rgds.
+	</text> 
+
+//several return function
+	<function name=nprimes list={n}>
+	  <return value={2*@n,3*@n,5*@n,7*@n,11*@n}>
+	</function>
+	<text ref=MyOutput>
+	 First 5 prime numbers multiplied by 10: @nprime(10).
+	</text>
+
+//different return
+	<function name=layout list={style}>
+	  <text ref=Layout1> first layout </text>
+	  <text ref=Layout2> second layout </text>
+	  <if cond=("@style" == "first")>
+	    <return ref=Layout1>
+	  <else>
+	    <return ref=Layout2>
+	  </if>
+	</function>
+	<text ref=MyOutput>
+	 example of the second layout: %layout("second")
+	</text>
+
+//recursive (factorial)
+	<function name=fact list={n}>
+	  <if cond=(@n <= 1)>
+	    <return value=1>
+	  <else>
+	    <return value=(@n*@fact(@n-1))>
+	  </if>
+	</function>
+
+//global variable access
+	@.Mr
+	 
+
+//function variable 
+	@functionName.localvariable
+	 
+
+//modules and referencing
+	<include module=math>
+	<text ref=Output>
+	  My function: @math.myMathFunction(5)
+	</text>
+
+//Math expressions
+	<text ref=STATEMENT>
+	  Simplify the fraction <MATH><box>3<over>6</box></MATH> and the fraction &([6/12]).
+	</text>
+
+//graphics
+	geo name=varName range={xMin,xMax,yMin,yMax} eye=eye vrp=vrp vpn=vpn vpv=vpv scale=scale norm=norm grid=grid
+
+	<geo name=triangle range={-10,10,-10,10} scale=0.4>
+	  	<line from={-5,-8} to={7,-8}>
+	  	<line from={7,-8} to={0,4}>
+	  	<line from={0,4} to={-5,-8}>
+	</geo>
+ 
+	<text ref=STATEMENT>
+	  What is the area of the following triangle<p>
+	  <img src="@triangle">
+	</text>
+
+//interaction with HTTP
+	<form action="/alekscgi/Isl.exe">
+	  <input name=lastname type=text value="your name">
+	  <input type=submit value="OK">
+	</form>
+	will assign the content of the form input field lastname to the ISL variable arg.lastname once the form is submitted.
+
+//adding modules 
+	&(@.addHTMLheaderInfo("js", "@ajs;/myFirstJsFile.js"));
+	<include module=ztesting>
+
+//date formatting
+	&(@displayDate("@.info.current_date[1]", "\%Y-\%m-\%d","\%D"));
+	 
+
+//javasctipt
+	function hello(){
+	  alert("Hello World!");  
+	}
+
+	function createDiv(){
+		var divNode = document.createElement("DIV");
+		var textnode = document.createTextNode("This is a new Div");
+		divNode.appendChild(textnode);
+		document.getElementById("rightTd").appendChild(divNode);
+	}
+
+	function changeClass(){
+		document.getElementById("rightTd").className = "newClass";
+	}
+
+	function drawCircle(){
+		
+		var svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svgElement.setAttribute("width" , "300");
+		svgElement.setAttribute("height","300");
+		document.getElementById("rightTd").appendChild(svgElement); 
+		 
+		var circElement = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		circElement.setAttribute("cx", "150");
+		circElement.setAttribute("cy", "100");
+		circElement.setAttribute("r", "80");
+		circElement.setAttribute("fill", "red");
+		 
+		svgElement.appendChild(circElement);
+	}
+
+//AJAX 
+	aleksSendRequest(debugRpcURL,"rpc_query=my_test",true)
+
+
+//files for Report
+
+	cronAsynReport.def // cron scheduled
+	  <function name=mergeAsynReport list={hashParams, id_job, db_job}> // handles 1 class at a time and 50 students max
+	  <function name=finalizeAsynReport list={id_job, db_job}> // creates the final report
+
+
+	xmlrpcGetcustomreport.def // called by cronAsynReport.def
+
+	customReportStudentTable.def // contains elements to actually build a Student XLS Table based on teacher settings
+
+	customReportDataFetcher.def // contains elements to fetch the data for the students
+
+	customReportTableColumnTypes.def // contains "column" implementations that handle how to prensent the data in the Excel cell
+
+	customReportTable.def // contains elements to build and actual XLS table
+
+	customReport.def // interface and tools for custom reports
+
+	
+//count number of occurence in log file
+ grep 76 /home/users/aleks/current/aleks/data/aleks_var/logfile/info/anaoum3.log | wc -l
+
+ //see how many tics (10 ms) a function takes
+ times()
+
+
+ <sysout value="blah" logfile="info/anaoum">
+	<sysout value="blah" logfile="info/anaoum2">
+
+
+//get other file versions 
+zapinfo [filename]
+zapget -U update_nbr -f [filename]
+
+/database access
+/home/users/aleks/current/SQL/mybin/mysql_school_code 2PA54XL
+
+/delete all lines of vim
+Type gg to move the cursor to the first line of the file, if it is not already there.
+Type dG to delete all the lines.
+
+//declare multiple variables
+<var name={nb_students, nb_columns} value={0, 0}>
+
+//make template options
+var buttons = document.querySelectorAll("input[type=button]");
+var checkboxes = document.querySelectorAll("input[type=checkbox]");
+for(var k=0;k<36;k++){
+for(var i=0, n=checkboxes.length;i<n;i++) {
+       checkboxes[i].checked = true;
+  }
+for(var j in a=[15,20,22,24,29,31,33,38,40,42,47,51]) {   
+      buttons[a[j]].click();
+  }
+  }
+
+//tables hierarchies (location)
+in home database
+
+//show table status
+shows table information
+
+//to set upstream
+git branch -u origin/islmockdata
+
+
+var a = function(jsData) {
+	for (var i = 0; i < jsData.audit_event.event_date.length; i++) {	
+	var logParagraph = document.createElement("P");
+	  var uiElements = {
+	    event_date: document.createElement("span"),
+	    ref_whom: document.createElement("span"),
+	    description: document.createElement("span")
+	  };
+	  uiElements.ref_whom.style.marginLeft = '10px'; 
+      uiElements.description.style.marginLeft = '10px';
+      uiElements.ref_whom.title = jsData.audit_event.firstname[i] + " " +  jsData.audit_event.lastname[i];
+	  for (var uiElement in uiElements) {
+	    var textNode = document.createTextNode(jsData.audit_event[uiElement][i]);
+	    uiElements[uiElement].appendChild(textNode);
+	    logParagraph.appendChild(uiElements[uiElement]);
+	  }
+	  document.getElementById("historyContainer").appendChild(logParagraph);
+	}    
+};
+
+var jsData = {
+	audit_event: {
+		event_date: [2015, 2016, 2017],
+		ref_whom: ["anaoum", "ureyes", "gildas"],
+		description: ["modified","submitted","created"],
+		firstname: ["anthony", "ulysses", "gildas"],
+		lastname: ["naoum", "reyes", "cadin"]
+	}
+};
+
+
+/// new way of sql
+
+aleks.SQL("UPDATE class SET register_altid_status=${status} " + ((ruleSql=="" || typeof ruleSql=="undefined")?"":", register_altid_rule='${rule}', register_altid_limits='${limits}'") + ", register_altid_info='${info}', register_email_domain='${emailDomain}' WHERE id=${idClass}", dbClass, {status:statusSql, rule:ruleSql, limits:limitsSql, info:infoSql, emailDomain: emailDomainSql, idClass:idClass});
+
+
+//errfile anaoum
+vi /home/users/aleks/current/aleks/data/aleks_var/logfile/debug/errfile_ANAOUM_anaoum.log 
+
+
+
+//custom report cms
+JsReport/src/aleks_report_utils.js
+_library_/sites/www_wwwbeta/aleks_layout/teacher/custom/custom_report_edit
+_library_/sites/www_wwwbeta/aleks_layout/teacher/custom/custom_report_schedule
+_library_/shortcut/clip_aksel_teacher_custom_report_fields
+ANAOUM:antho
+flags:croncounter
+//popup :
+classReportAlertPopup in JsMisc classReportCommonTools.js
+addhtmlheaderInfo
+//how to use the popup
+	
+		this.pieReportStandardSelector = new classReportAlertPopup();
+		this.pieReportCurrentStandard = new ClassReportTextNode("");
+		this.pieReportStandardSelector.setPopupTitle(readyReportTxt["standardSelectorTitle"]);
+
+		var standardSelectedDiv = new ui.Element("div");
+		var standardSelected = new ui.Element("span");
+		standardSelected.setStyle({fontWeight:"bold"});
+		standardSelected.appendChild(this.pieReportCurrentStandard);
+		standardSelectedDiv.appendChild(new ClassReportTextNode(readyReportTxt["currentStandard"]));
+		standardSelectedDiv.appendChild(standardSelected);
+		standardSelectedDiv.appendChild(new ClassReportTextNode(readyReportTxt["differentStandardPopup"]));
+
+		this.R_otherStandardsList = new ui.Element("div");
+		this.R_otherStandardsList.setStyle({margin:"10px"});
+
+		var changeDefaultStandardTxt = new ui.Element("div");
+		var linkClassSummary = new ui.Element("a");
+		linkClassSummary.setHref(refClassSummary);
+		changeDefaultStandardTxt.setStyle({fontStyle:"italic"});
+		linkClassSummary.appendChild(new ClassReportTextNode(readyReportTxt["classSummary"]));
+		changeDefaultStandardTxt.appendChild(new ClassReportTextNode(readyReportTxt["changeStandard"]));
+		changeDefaultStandardTxt.appendChild(linkClassSummary);
+
+		this.pieReportStandardSelector.attachPopupToElement(document.body);
+		this.pieReportStandardSelector.setAlertContent(standardSelectedDiv);
+		this.pieReportStandardSelector.setAlertContent(this.R_otherStandardsList);
+		this.pieReportStandardSelector.setAlertContent(changeDefaultStandardTxt);
+		this.pieReportStandardSelector.setValidateClickAction(_callLoadNewStandard, this);
