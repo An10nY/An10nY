@@ -1,3 +1,7 @@
 body {
-  background-color: #333333;
+  background-color: #222222;
+}
+
+#main-div {
+  margin:auto;
 }

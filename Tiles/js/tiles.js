@@ -1,9 +1,11 @@
 var Tile = function() {
   var windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
   var windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-  this.__width = windowWidth * 0.15 + "px";
-  this.__height = windowWidth * 0.15 + "px";
-  this.__margin = windowWidth * 0.006 + "px";
+  this.__width = windowWidth * 0.14 + "px";
+  this.__height = windowWidth * 0.14 + "px";
+  this.__margin = windowWidth * 0.005 + "px";
+  this.__mainDiv = document.getElementById("main-div");
+  this.__mainDiv.style.maxWidth = windowWidth * 0.9 + "px";
 };
 
 Tile.prototype.createTile = function() {
@@ -13,8 +15,9 @@ Tile.prototype.createTile = function() {
   newTile.style.margin = this.__margin;
   newTile.style.display = "inline-block";
   this.addHoverEventListener(newTile);
-  this.setBackground(newTile);
-  document.getElementById("main-div").appendChild(newTile);
+  this.addClickEventListener(newTile);
+  this.setBackground(newTile);  
+  this.__mainDiv.appendChild(newTile);
 };
 
 Tile.prototype.setBackground = function(tile, color) {
@@ -37,19 +40,18 @@ Tile.prototype.addHoverEventListener = function(tile) {
   var curTile = this;
   var oldTileColor;
   this.addEventListener(tile, 'mouseover', function() {
-    //curTile.transformSize(tile, 10);
     oldTileColor = tile.style.backgroundColor;
-    console.log("old color: " + tile.style.backgroundColor);
     tile.style.backgroundColor = curTile.shadeRGBColor(oldTileColor,0.5);
-    console.log("new color: " + tile.style.backgroundColor);
   });
   this.addEventListener(tile, 'mouseout', function() {
-    console.log("old color: " + tile.style.backgroundColor);
     tile.style.backgroundColor = oldTileColor;
-    console.log("new color: " + tile.style.backgroundColor);
   });
 };
-
+Tile.prototype.addClickEventListener = function(tile) {
+  this.addEventListener(tile,'click',function(){
+    tile.style.position = 'absolute';
+  });
+};
 Tile.prototype.addEventListener = function(tile, triggeringEvent, executedFunction) {
   if (document.addEventListener) {                
     tile.addEventListener(triggeringEvent, executedFunction);
@@ -90,3 +92,10 @@ Tile.prototype.blendRGBColors = function(c0, c1, p) {
   var B = parseInt(f[2]);
   return "rgb("+(Math.round((parseInt(t[0].slice(4))-R)*p)+R)+","+(Math.round((parseInt(t[1])-G)*p)+G)+","+(Math.round((parseInt(t[2])-B)*p)+B)+")";
 }; 
+
+window.onload =function() {
+  var tile = new Tile();
+    for(var i = 0; i < 20;i++) {
+    tile.createTile();
+  }
+};
