@@ -1,23 +1,30 @@
-var Tile = function() {
+var Tile = function(width, height, margin) {
   var windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
   var windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-  this.__width = windowWidth * 0.14 + "px";
-  this.__height = windowWidth * 0.14 + "px";
-  this.__margin = windowWidth * 0.005 + "px";
-  this.__mainDiv = document.getElementById("main-div");
-  this.__mainDiv.style.maxWidth = windowWidth * 0.9 + "px";
+  this.__defaultWidth = windowWidth * 0.14;
+  this.__defaultHeight = windowWidth * 0.14;
+  this.__defaultMargin = windowWidth * 0.005;
+  this.__newTile = document.createElement("DIV");
+  this.__minMargin = 20/28;
+  margin = Math.max(margin  || this.__defaultMargin,this.__minMargin);
+  this.__newTile.style.height = (height || this.__defaultHeight) + "px";
+  this.__newTile.style.width = (width || this.__defaultWidth) + "px";
+  this.__newTile.style.margin = margin + "px";
+  this.__newTile.style.minHeight = "20px";
+  this.__newTile.style.minWidth = "20px";
+  this.__newTile.style.display = "inline-block";
+  this.addHoverEventListener(this.__newTile);
+  this.addClickEventListener(this.__newTile);
+  this.setBackground(this.__newTile);
 };
 
-Tile.prototype.createTile = function() {
-  var newTile = document.createElement("DIV");
-  newTile.style.height = this.__height;
-  newTile.style.width = this.__width;
-  newTile.style.margin = this.__margin;
-  newTile.style.display = "inline-block";
-  this.addHoverEventListener(newTile);
-  this.addClickEventListener(newTile);
-  this.setBackground(newTile);  
-  this.__mainDiv.appendChild(newTile);
+Tile.prototype.getMainDiv = function() {
+    return this.__newTile;
+};
+
+Tile.prototype.setDimensions = function(height, width) {
+  this.style.height = height + "px";
+  this.style.width = width + "px";
 };
 
 Tile.prototype.setBackground = function(tile, color) {
@@ -94,8 +101,85 @@ Tile.prototype.blendRGBColors = function(c0, c1, p) {
 }; 
 
 window.onload =function() {
-  var tile = new Tile();
-    for(var i = 0; i < 20;i++) {
-    tile.createTile();
+  
+  // var tile = new Tile();
+  //   for(var i = 0; i < 20;i++) {
+  //   tile.createTile();
+  // }
+  var a = new Canvas();
+};
+
+
+
+
+var Canvas = function() {  
+  this.__windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  this.__windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;  
+  this.__mainDiv = document.getElementById("main-div");
+  this.__tileList = [];
+  this.__nbTiles = 0;
+  this._init();
+};
+
+Canvas.prototype.grabTiles = function() { 
+  this._updateElementDimensions();
+  for(var i = 0; i < this.__nbTiles; i++) {
+    this.__mainDiv.appendChild(this.__tileList[i]);
   }
 };
+
+Canvas.prototype._init = function() {
+  this.__mainDiv.style.maxWidth = this.__windowWidth * 0.9 + "px";
+  this.__mainDiv.style.maxHeight = this.__windowHeight * 0.98 + "px";
+  this.__mainDiv.style.overflow = "hidden";
+  var width =  this.__windowWidth * 0.014;
+  var height =  this.__windowWidth * 0.014;
+  var margin =  this.__windowWidth * 0.001;
+  var nbTiles = this.calculateNbTiles(width,height,margin);
+  for(var i = 0; i < nbTiles; i++) {
+    var a = new Tile(width, height, margin);
+    this.appendChild(a);
+  }
+  this.createCover();
+};
+
+Canvas.prototype.createCover = function(){
+  var cover = document.createElement("div");
+  cover.style.maxWidth = this.__windowWidth * 0.7 + "px";
+  cover.style.height = this.__windowHeight * 0.98 + "px";
+  cover.style.backgroundColor = "black";
+  cover.style.position = "absolute";
+  cover.style.left = "0";
+  cover.style.right = "0";
+  cover.style.margin = "auto";
+  cover.style.top = "8px";
+  cover.style.opacity = "0.7";
+  cover.style.filter  = 'alpha(opacity=70)';
+  this.__mainDiv.appendChild(cover);
+};
+
+Canvas.prototype.calculateNbTiles = function(width, height, margin) {
+  var nbTilesPerRow = Math.floor(0.9 * this.__windowWidth/ (width + 2 * margin));
+  var nbRowsNeeded = Math.ceil(this.__windowHeight * 0.98 / (height + 2 * margin));
+  return nbTilesPerRow * nbRowsNeeded * 1.5;
+};
+
+Canvas.prototype.appendChild = function(child) {
+  if(child instanceof Node)
+    this.__mainDiv.appendChild(child);
+  else(child instanceof Tile)
+    this.__mainDiv.appendChild(child.getMainDiv());
+};
+
+Canvas.prototype._updateElementDimensions = function() {
+  this.__windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  this.__windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  this.__mainDiv.style.maxWidth = this.__windowWidth * 0.9 + "px";
+  this.__width = this.__windowWidth * 0.14 + "px";
+  this.__height = this.__windowWidth * 0.14 + "px";
+  this.__margin = this.__windowWidth * 0.005 + "px";
+  for(var i = 0; i < this.__nbTiles; i++) {
+    this.__tileList[i].setDimensions(this.__height, this.__width);
+  }
+};
+
