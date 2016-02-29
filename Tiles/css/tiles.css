@@ -3,5 +3,6 @@ body {
 }
 
 #main-div {
-  margin:auto;
+  margin: auto;
+  line-height: 1px;
 }
