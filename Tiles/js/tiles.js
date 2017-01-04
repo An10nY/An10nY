@@ -132,9 +132,9 @@ Canvas.prototype._init = function() {
   this.__mainDiv.style.maxWidth = this.__windowWidth * 0.9 + "px";
   this.__mainDiv.style.maxHeight = this.__windowHeight * 0.98 + "px";
   this.__mainDiv.style.overflow = "hidden";
-  var width =  this.__windowWidth * 0.014;
-  var height =  this.__windowWidth * 0.014;
-  var margin =  this.__windowWidth * 0.001;
+  var width =  this.__windowWidth * 0.028;
+  var height =  this.__windowWidth * 0.028;
+  var margin =  this.__windowWidth * 0.002;
   var nbTiles = this.calculateNbTiles(width,height,margin);
   for(var i = 0; i < nbTiles; i++) {
     var a = new Tile(width, height, margin);
@@ -153,8 +153,8 @@ Canvas.prototype.createCover = function(){
   cover.style.right = "0";
   cover.style.margin = "auto";
   cover.style.top = "8px";
-  cover.style.opacity = "0.7";
-  cover.style.filter  = 'alpha(opacity=70)';
+  cover.style.opacity = "0.8";
+  cover.style.filter  = 'alpha(opacity=80)';
   this.__mainDiv.appendChild(cover);
 };
 
